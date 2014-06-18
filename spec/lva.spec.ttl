@@ -1,0 +1,409 @@
+@prefix dc:      <http://purl.org/dc/elements/1.1/> .
+@prefix dct:	 <http://purl.org/dc/terms/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dbpedia: <http://dbpedia.org/ontology#> .
+
+# Linked Data API prefixes
+
+@prefix api:     <http://purl.org/linked-data/api/vocab#> .
+@prefix extras: <http://www.epimorphics.com/vocabularies/lda#> .
+
+# Prefix for Linked Vocabulary API
+@prefix lva:	<http://www.tw.rpi.edu/vocabularies/lva#> .
+
+lva:linked-vocabulary-api
+	a api:API ;
+	rdfs:label "SKOS Vocabulary Service"@en ;
+	api:sparqlEndpoint <http://example.com:3030/skos/query> ;
+	api:base "http://example.com/skos" ;
+	extras:enableETags true ;
+	api:viewer
+		lva:SKOSViewer ,
+		api:describeViewer ,
+		api:labelledDescribeViewer ;
+	api:defaultViewer lva:SKOSViewer ;
+	api:defaultFormatter lva:htmlFormatter ;
+	api:endpoint
+		lva:vocabulariesEndpoint ,
+		lva:vocabularyEndpoint ,
+		lva:termEndpoint ,
+		lva:vocabularyTermsEndpoint ,
+		lva:NarrowerTermsEndpoint ,
+		lva:BroaderTermsEndpoint ,
+		lva:RelatedTermsEndpoint ,
+		lva:NarrowerTransitiveTermsEndpoint ,
+		lva:BroaderTransitiveTermsEndpoint ,
+		lva:NarrowMatchTermsEndpoint ,
+		lva:BroadMatchTermsEndpoint ,
+		lva:RelatedMatchTermsEndpoint ,
+		lva:CloseMatchTermsEndpoint ,
+		lva:ExactMatchTermsEndpoint ,
+		lva:listTermsByExactLabel ,
+		lva:listTermsByLabelContains ;
+	api:variable
+		[ api:name "base"; api:value "http://example.com/skos" ] ,
+		[ api:name "webapp"; api:value "/elda" ] ,
+		[ api:name "_suppress_ipto"; api:value "yes" ] ,
+		[ api:name "_strip_has"; api:value "yes" ] ;
+	.
+
+# FORMATTERS
+
+lva:htmlFormatter
+	a api:XsltFormatter ;
+	api:name "html" ;
+	api:mimeType "text/html; charset=utf-8" ;
+	api:stylesheet "lda-assets/xslt/linked-data-api.xsl" ;
+	.
+
+# VIEWERS
+
+lva:SKOSViewer
+	a api:Viewer ;
+	api:name "SKOS Viewer" ;
+	api:include api:labelledDescribeViewer ;
+	extras:describeAllLabel skos:prefLabel ;
+	.
+
+# ENDPOINTS
+
+lva:vocabulariesEndpoint
+	a api:ListEndpoint ;
+	api:uriTemplate "/vocabs" ;
+	api:exampleRequestPath "/vocabs" ;
+	api:selector [
+		api:where "?item rdf:type skos:ConceptScheme. ?item skos:prefLabel ?label." ;
+		api:orderBy "?label" ;
+	] ;
+	.
+
+lva:vocabularyEndpoint
+	a api:ItemEndpoint ;
+	api:uriTemplate "/vocab/{vocabulary}" ;
+	api:itemTemplate "{base}/vocab/{vocabulary}" ;
+	api:exampleRequestPath "/vocab/nims" ;
+	.
+
+lva:termEndpoint
+	a api:ItemEndpoint ;
+	api:uriTemplate "/vocab/{vocabulary}/term/{term}" ;
+	api:itemTemplate "{base}/vocab/{vocabulary}/term/{term}" ;
+	api:exampleRequestPath "/vocab/nims/term/administrative_and_regulatory" ;
+	.
+
+lva:vocabularyTermsEndpoint
+	a api:ListEndpoint ;
+	rdfs:comment "I am making an assumption that I can easily map the scheme URI based on the Linked Data URI" ;
+	api:uriTemplate "/vocab/{vocabulary}/terms" ;
+	api:exampleRequestPath "/vocab/nims/terms" ;
+	api:variable [ 
+		api:name "scheme" ;
+		api:value "{base}/vocab/{vocabulary}" ;
+		api:type rdfs:Resource ;
+	] ;
+	api:selector [
+		api:where "?item skos:inScheme ?scheme. ?item skos:prefLabel ?label." ;
+		api:orderBy "?label" ;
+	] ;
+	.
+
+lva:vocabularyTopTermsEndpoint
+	a api:ListEndpoint ;
+	api:uriTemplate "/vocab/{vocabulary}/topTerms" ;
+	api:exampleRequestPath "/vocab/nims/topTerms" ;
+	api:variable [ 
+		api:name "scheme" ;
+		api:value "{base}/vocab/{vocabulary}" ;
+		api:type rdfs:Resource ;
+	] ;
+	api:selector [
+		api:where "?scheme skos:hasTopConcept ?item. ?item skos:prefLabel ?label." ;
+		api:orderBy "?label" ;
+	] ;
+	.
+
+lva:NarrowerTermsEndpoint
+	a api:ListEndpoint ;
+	api:uriTemplate "/vocab/{vocabulary}/term/{term}/narrower" ;
+	api:exampleRequestPath "/vocab/nims/term/administrative_and_regulatory/narrower" ;
+	api:variable [ 
+		api:name "concept" ;
+		api:value "{base}/vocab/{vocabulary}/term/{term}" ;
+		api:type rdfs:Resource ;
+	] ;
+	api:selector [
+		api:where "?concept skos:narrower ?item. ?item skos:prefLabel ?label." ;
+		api:orderBy "?label" ;
+	] ;
+	.
+	
+lva:BroaderTermsEndpoint
+	a api:ListEndpoint ;
+	api:uriTemplate "/vocab/{vocabulary}/term/{term}/broader" ;
+	api:exampleRequestPath "/vocab/nims/term/administrative_and_regulatory/broader" ;
+	api:variable [ 
+		api:name "concept" ;
+		api:value "{base}/vocab/{vocabulary}/term/{term}" ;
+		api:type rdfs:Resource ;
+	] ;
+	api:selector [
+		api:where "?concept skos:broader ?item. ?item skos:prefLabel ?label." ;
+		api:orderBy "?label" ;
+	] ;
+	.
+
+lva:RelatedTermsEndpoint
+	a api:ListEndpoint ;
+	api:uriTemplate "/vocab/{vocabulary}/term/{term}/related" ;
+	api:exampleRequestPath "/vocab/nims/term/administrative_and_regulatory/related" ;
+	api:variable [ 
+		api:name "concept" ;
+		api:value "{base}/vocab/{vocabulary}/term/{term}" ;
+		api:type rdfs:Resource ;
+	] ;
+	api:selector [
+		api:where "?concept skos:related ?item. ?item skos:prefLabel ?label." ;
+		api:orderBy "?label" ;
+	] ;
+	.
+
+lva:NarrowerTransitiveTermsEndpoint
+	a api:ListEndpoint ;
+	api:uriTemplate "/vocab/{vocabulary}/term/{term}/narrowerTransitive" ;
+	api:exampleRequestPath "/vocab/nims/term/administrative_and_regulatory/narrowerTransitive" ;
+	api:variable [ 
+		api:name "concept" ;
+		api:value "{base}/vocab/{vocabulary}/term/{term}" ;
+		api:type rdfs:Resource ;
+	] ;
+	api:selector [
+		api:where "?concept skos:narrowerTransitive ?item. ?item skos:prefLabel ?label." ;
+		api:orderBy "?label" ;
+	] ;
+	.
+
+lva:BroaderTransitiveTermsEndpoint
+	a api:ListEndpoint ;
+	api:uriTemplate "/vocab/{vocabulary}/term/{term}/broaderTransitive" ;
+	api:exampleRequestPath "/vocab/nims/term/administrative_and_regulatory/broaderTransitive" ;
+	api:variable [ 
+		api:name "concept" ;
+		api:value "{base}/vocab/{vocabulary}/term/{term}" ;
+		api:type rdfs:Resource ;
+	] ;
+	api:selector [
+		api:where "?concept skos:broaderTransitive ?item. ?item skos:prefLabel ?label." ;
+		api:orderBy "?label" ;
+	] ;
+	.
+
+lva:NarrowMatchTermsEndpoint
+	a api:ListEndpoint ;
+	api:uriTemplate "/vocab/{vocabulary}/term/{term}/narrowMatch" ;
+	api:exampleRequestPath "/vocab/nims/term/administrative_and_regulatory/narrowMatch" ;
+	api:variable [ 
+		api:name "concept" ;
+		api:value "{base}/vocab/{vocabulary}/term/{term}" ;
+		api:type rdfs:Resource ;
+	] ;
+	api:selector [
+		api:where "?concept skos:narrowMatch ?item. ?item skos:prefLabel ?label." ;
+		api:orderBy "?label" ;
+	] ;
+	.
+
+lva:BroadMatchTermsEndpoint
+	a api:ListEndpoint ;
+	api:uriTemplate "/vocab/{vocabulary}/term/{term}/broadMatch" ;
+	api:exampleRequestPath "/vocab/nims/term/administrative_and_regulatory/broadMatch" ;
+	api:variable [ 
+		api:name "concept" ;
+		api:value "{base}/vocab/{vocabulary}/term/{term}" ;
+		api:type rdfs:Resource ;
+	] ;
+	api:selector [
+		api:where "?concept skos:broadMatch ?item. ?item skos:prefLabel ?label." ;
+		api:orderBy "?label" ;
+	] ;
+	.
+
+lva:RelatedMatchTermsEndpoint
+	a api:ListEndpoint ;
+	api:uriTemplate "/vocab/{vocabulary}/term/{term}/relatedMatch" ;
+	api:exampleRequestPath "/vocab/nims/term/administrative_and_regulatory/relatedMatch" ;
+	api:variable [ 
+		api:name "concept" ;
+		api:value "{base}/vocab/{vocabulary}/term/{term}" ;
+		api:type rdfs:Resource ;
+	] ;
+	api:selector [
+		api:where "?concept skos:relatedMatch ?item. ?item skos:prefLabel ?label." ;
+		api:orderBy "?label" ;
+	] ;
+	.
+
+lva:CloseMatchTermsEndpoint
+	a api:ListEndpoint ;
+	api:uriTemplate "/vocab/{vocabulary}/term/{term}/closeMatch" ;
+	api:exampleRequestPath "/vocab/nims/term/administrative_and_regulatory/closeMatch" ;
+	api:variable [ 
+		api:name "concept" ;
+		api:value "{base}/vocab/{vocabulary}/term/{term}" ;
+		api:type rdfs:Resource ;
+	] ;
+	api:selector [
+		api:where "?concept skos:closeMatch ?item. ?item skos:prefLabel ?label." ;
+		api:orderBy "?label" ;
+	] ;
+	.
+
+lva:ExactMatchTermsEndpoint
+	a api:ListEndpoint ;
+	api:uriTemplate "/vocab/{vocabulary}/term/{term}/exactMatch" ;
+	api:exampleRequestPath "/vocab/nims/term/administrative_and_regulatory/exactMatch" ;
+	api:variable [ 
+		api:name "concept" ;
+		api:value "{base}/vocab/{vocabulary}/term/{term}" ;
+		api:type rdfs:Resource ;
+	] ;
+	api:selector [
+		api:where "?concept skos:exactMatch ?item. ?item skos:prefLabel ?label." ;
+		api:orderBy "?label" ;
+	] ;
+	.
+
+lva:listTermsByExactLabel
+	a api:ListEndpoint ;
+	api:exampleRequestPath "/vocab/nims/terms?anyLabel=Administrative%20and%20Regulatory" ;
+	api:uriTemplate "/vocab/{vocab}/terms?anyLabel={text}" ;
+	api:variable [ 
+		api:name "scheme" ;
+		api:value "{base}/vocab/{vocab}" ;
+		api:type rdfs:Resource ;
+	] ;
+	api:selector [
+			api:where
+				""" ?item skos:inScheme ?scheme .
+					{ ?item skos:prefLabel ?label }
+						UNION
+						{ ?item skos:altLabel ?label }
+						UNION
+						{ ?item rdfs:label ?label }
+						FILTER ( str(?label)=?text ) """ ;
+			api:orderBy "?label" ;
+	] ;
+	.
+
+lva:listTermsByLabelContains
+	a api:ListEndpoint;
+	api:exampleRequestPath "/vocab/nims/terms?anyLabelContains=Regulatory" ;
+	api:uriTemplate "/vocab/{vocab}/terms?anyLabelContains={text}" ;
+	api:variable [ 
+		api:name "scheme" ;
+		api:value "{base}/vocab/{vocab}" ;
+		api:type rdfs:Resource ;
+	] ;
+	api:selector [
+			api:where
+				""" ?item skos:inScheme ?scheme .
+					{ ?item skos:prefLabel ?label }
+						UNION
+						{ ?item skos:altLabel ?label }
+						UNION
+						{ ?item rdfs:label ?label }
+						FILTER regex( str(?label) , ?text , 'i' ) """ ;
+			api:orderBy "?label" ;
+	] ;
+	.
+
+# properties definitions with labels
+
+rdfs:label
+	a rdf:Property ;
+	api:label "label" ;
+	.
+
+skos:prefLabel
+	a rdf:Property ;
+	api:label "prefLabel" ;
+	.
+
+skos:altLabel
+	a rdf:Property ;
+	api:label "altLabel" ;
+	.
+
+skos:narrower
+	a rdf:Property ;
+	api:label "narrower" ;
+	.
+
+skos:narrowerTransitive
+	a rdf:Property ;
+	api:label "narrowerTransitive" ;
+	.
+
+skos:narrowMatch
+	a rdf:Property ;
+	api:label "narrowMatch" ;
+	.
+
+skos:broader
+	a rdf:Property ;
+	api:label "broader" ;
+	.
+
+skos:broaderTransitive
+	a rdf:Property ;
+	api:label "broaderTransitive" ;
+	.
+
+skos:broadMatch
+	a rdf:Property ;
+	api:label "broadMatch" ;
+	.
+
+skos:related
+	a rdf:Property ;
+	api:label "related" ;
+	.
+
+skos:relatedMatch
+	a rdf:Property ;
+	api:label "relatedMatch" ;
+	.
+
+skos:closeMatch
+	a rdf:Property ;
+	api:label "closeMatch" ;
+	.
+
+skos:exactMatch
+	a rdf:Property ;
+	api:label "exactMatch" ;
+	.
+
+skos:inScheme
+	a rdf:Property ;
+	api:label "inScheme" ;
+	.
+
+skos:definition
+	a rdf:Property ;
+	api:label "definition" ;
+	.
+	
+skos:notation
+	a rdf:Property ;
+	api:label "notation" ;
+	.
+
+dct:subject
+	a rdf:Property ;
+	api:label "subject" ;
+	.
