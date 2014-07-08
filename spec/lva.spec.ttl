@@ -44,7 +44,8 @@ lva:linked-vocabulary-api
 		lva:CloseMatchTermsEndpoint ,
 		lva:ExactMatchTermsEndpoint ,
 		lva:listTermsByExactLabel ,
-		lva:listTermsByLabelContains ;
+		lva:listTermsByLabelContains ,
+		lva:listTermsByNotation ;
 	api:variable
 		[ api:name "base"; api:value "http://example.com/skos" ] ,
 		[ api:name "webapp"; api:value "/elda" ] ,
@@ -318,6 +319,24 @@ lva:listTermsByLabelContains
 						{ ?item rdfs:label ?label }
 						FILTER regex( str(?label) , ?text , 'i' ) """ ;
 			api:orderBy "?label" ;
+	] ;
+	.
+
+lva:ListTermsByNotation
+	a api:ListEndpoint;
+	api:exampleRequestPath "/vocab/nims/terms?notation=512" ;
+	api:uriTemplate "/vocab/{vocab}/terms?notation={text}" ;
+	api:variable [
+		api:name "scheme" ;
+		api:value "{base}/vocab/{vocab}" ;
+		api:type rdfs:Resource ;
+	] ;
+	api:selector [
+		api:where
+			""" ?item skos:inScheme ?scheme .
+				?item skos:notation ?notation .
+				FILTER ( str(?notation)=?text ) """ ;
+		api:orderBy "?item" ;
 	] ;
 	.
 
