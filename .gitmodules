@@ -1,0 +1,3 @@
+[submodule "elda"]
+	path = elda
+	url = https://github.com/epimorphics/elda
