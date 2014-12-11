@@ -138,7 +138,7 @@ lva:NarrowerTermsEndpoint
 		api:type rdfs:Resource ;
 	] ;
 	api:selector [
-		api:where "?concept skos:narrower ?item. ?item skos:prefLabel ?label." ;
+		api:where "{ ?concept skos:narrower ?item } UNION { ?item skos:broader ?concept } . ?item skos:prefLabel ?label." ;
 		api:orderBy "?label" ;
 	] ;
 	.
@@ -153,7 +153,7 @@ lva:BroaderTermsEndpoint
 		api:type rdfs:Resource ;
 	] ;
 	api:selector [
-		api:where "?concept skos:broader ?item. ?item skos:prefLabel ?label." ;
+		api:where "{ ?concept skos:broader ?item } UNION { ?item skos:narrower ?concept } . ?item skos:prefLabel ?label ." ;
 		api:orderBy "?label" ;
 	] ;
 	.
@@ -168,7 +168,7 @@ lva:RelatedTermsEndpoint
 		api:type rdfs:Resource ;
 	] ;
 	api:selector [
-		api:where "?concept skos:related ?item. ?item skos:prefLabel ?label." ;
+		api:where "{ ?concept skos:related ?item } UNION { ?item skos:related ?concept } . ?item skos:prefLabel ?label ." ;
 		api:orderBy "?label" ;
 	] ;
 	.
@@ -183,7 +183,7 @@ lva:NarrowerTransitiveTermsEndpoint
 		api:type rdfs:Resource ;
 	] ;
 	api:selector [
-		api:where "?concept skos:narrowerTransitive ?item. ?item skos:prefLabel ?label." ;
+		api:where "{ ?concept skos:narrowerTransitive ?item } UNION { ?item skos:broaderTransitive ?concept } . ?item skos:prefLabel ?label ." ;
 		api:orderBy "?label" ;
 	] ;
 	.
@@ -198,7 +198,7 @@ lva:BroaderTransitiveTermsEndpoint
 		api:type rdfs:Resource ;
 	] ;
 	api:selector [
-		api:where "?concept skos:broaderTransitive ?item. ?item skos:prefLabel ?label." ;
+		api:where "{ ?concept skos:broaderTransitive ?item } UNION { ?item skos:narrowerTransitive ?concept } . ?item skos:prefLabel ?label." ;
 		api:orderBy "?label" ;
 	] ;
 	.
@@ -213,7 +213,7 @@ lva:NarrowMatchTermsEndpoint
 		api:type rdfs:Resource ;
 	] ;
 	api:selector [
-		api:where "?concept skos:narrowMatch ?item. ?item skos:prefLabel ?label." ;
+		api:where "{ ?concept skos:narrowMatch ?item } UNION {?item skos:broadMatch ?concept } . ?item skos:prefLabel ?label." ;
 		api:orderBy "?label" ;
 	] ;
 	.
@@ -228,7 +228,7 @@ lva:BroadMatchTermsEndpoint
 		api:type rdfs:Resource ;
 	] ;
 	api:selector [
-		api:where "?concept skos:broadMatch ?item. ?item skos:prefLabel ?label." ;
+		api:where "{ ?concept skos:broadMatch ?item } UNION { ?item skos:narrowMatch ?concept } . ?item skos:prefLabel ?label." ;
 		api:orderBy "?label" ;
 	] ;
 	.
@@ -243,7 +243,7 @@ lva:RelatedMatchTermsEndpoint
 		api:type rdfs:Resource ;
 	] ;
 	api:selector [
-		api:where "?concept skos:relatedMatch ?item. ?item skos:prefLabel ?label." ;
+		api:where "{ ?concept skos:relatedMatch ?item } UNION { ?item skos:relatedMatch ?concept } . ?item skos:prefLabel ?label." ;
 		api:orderBy "?label" ;
 	] ;
 	.
@@ -258,7 +258,7 @@ lva:CloseMatchTermsEndpoint
 		api:type rdfs:Resource ;
 	] ;
 	api:selector [
-		api:where "?concept skos:closeMatch ?item. ?item skos:prefLabel ?label." ;
+		api:where "{ ?concept skos:closeMatch ?item } UNION { ?item skos:closeMatch ?concept } . ?item skos:prefLabel ?label." ;
 		api:orderBy "?label" ;
 	] ;
 	.
@@ -273,7 +273,7 @@ lva:ExactMatchTermsEndpoint
 		api:type rdfs:Resource ;
 	] ;
 	api:selector [
-		api:where "?concept skos:exactMatch ?item. ?item skos:prefLabel ?label." ;
+		api:where "{ ?concept skos:exactMatch ?item } UNION { ?item skos:exactMatch ?concept } . ?item skos:prefLabel ?label." ;
 		api:orderBy "?label" ;
 	] ;
 	.
