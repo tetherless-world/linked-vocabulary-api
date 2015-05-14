@@ -30,6 +30,7 @@ lva:linked-vocabulary-api
 	api:defaultFormatter lva:htmlFormatter ;
 	api:endpoint
 		lva:vocabulariesEndpoint ,
+		lva:termsEndpoint ,
 		lva:vocabularyEndpoint ,
 		lva:termEndpoint ,
 		lva:vocabularyTermsEndpoint ,
@@ -44,8 +45,11 @@ lva:linked-vocabulary-api
 		lva:CloseMatchTermsEndpoint ,
 		lva:ExactMatchTermsEndpoint ,
 		lva:listTermsByExactLabel ,
+		lva:listVocabularyTermsByExactLabel ,
 		lva:listTermsByLabelContains ,
-		lva:listTermsByNotation ;
+		lva:listVocabularyTermsByLabelContans ,
+		lva:listTermsByNotation ,
+		lva:listVocabularyTermsByNotation ;
 	api:variable
 		[ api:name "base"; api:value "http://example.com/skos" ] ,
 		[ api:name "webapp"; api:value "/elda" ] ,
@@ -79,6 +83,16 @@ lva:vocabulariesEndpoint
 	api:exampleRequestPath "/vocabs" ;
 	api:selector [
 		api:where "?item rdf:type skos:ConceptScheme. ?item skos:prefLabel ?label." ;
+		api:orderBy "?label" ;
+	] ;
+	.
+
+lva:termsTendpoint
+	a api:ListEndpoint ;
+	api:uriTemplate "/terms" ;
+	api:exampleRequestPath "/terms" ;
+	api:selector [
+		api:where "?item rdf:type skos:Concept.  ?item skos:prefLabel ?label." ;
 		api:orderBy "?label" ;
 	] ;
 	.
@@ -280,6 +294,23 @@ lva:ExactMatchTermsEndpoint
 
 lva:listTermsByExactLabel
 	a api:ListEndpoint ;
+	api:exampleRequestPath "/terms?anyLabel=Administrative%20and%20Regulatory" ;
+	api:uriTemplate "/terms?anyLabel={text}" ;
+	api:selector [
+		api:where
+			""" ?item rdf:type skos:Concept .
+			{ ?item skos:prefLabel ?label }
+			UNION
+			{ ?item skos:altLabel ?label }
+			UNION
+			{ ?item rdfs:label ?label }
+			FILTER ( str(?label)=?text ) """ ;
+		api:orderBy "?label" ;
+	] ;
+	.
+
+lva:listVocabularyTermsByExactLabel
+	a api:ListEndpoint ;
 	api:exampleRequestPath "/vocab/nims/terms?anyLabel=Administrative%20and%20Regulatory" ;
 	api:uriTemplate "/vocab/{vocab}/terms?anyLabel={text}" ;
 	api:variable [ 
@@ -288,19 +319,36 @@ lva:listTermsByExactLabel
 		api:type rdfs:Resource ;
 	] ;
 	api:selector [
-			api:where
-				""" ?item skos:inScheme ?scheme .
-					{ ?item skos:prefLabel ?label }
-						UNION
-						{ ?item skos:altLabel ?label }
-						UNION
-						{ ?item rdfs:label ?label }
-						FILTER ( str(?label)=?text ) """ ;
-			api:orderBy "?label" ;
+		api:where
+			""" ?item skos:inScheme ?scheme .
+			{ ?item skos:prefLabel ?label }
+			UNION
+			{ ?item skos:altLabel ?label }
+			UNION
+			{ ?item rdfs:label ?label }
+			FILTER ( str(?label)=?text ) """ ;
+		api:orderBy "?label" ;
 	] ;
 	.
 
 lva:listTermsByLabelContains
+	a api:ListEndpoint;
+	api:exampleRequestPath "/terms?anyLabelContains=Regulatory" ;
+	api:uriTemplate "/terms?anyLabelContains={text}" ;
+	api:selector [
+		api:where
+			""" ?item rdf:type skos:Concept .
+			{ ?item skos:prefLabel ?label }
+			UNION
+			{ ?item skos:altLabel ?label }
+			UNION
+			{ ?item rdfs:label ?label }
+			FILTER regex( str(?label) , ?text , 'i' ) """ ;
+		api:orderBy "?label" ;
+	] ;
+	.
+
+lva:listVocabularyTermsByLabelContains
 	a api:ListEndpoint;
 	api:exampleRequestPath "/vocab/nims/terms?anyLabelContains=Regulatory" ;
 	api:uriTemplate "/vocab/{vocab}/terms?anyLabelContains={text}" ;
@@ -310,19 +358,32 @@ lva:listTermsByLabelContains
 		api:type rdfs:Resource ;
 	] ;
 	api:selector [
-			api:where
-				""" ?item skos:inScheme ?scheme .
-					{ ?item skos:prefLabel ?label }
-						UNION
-						{ ?item skos:altLabel ?label }
-						UNION
-						{ ?item rdfs:label ?label }
-						FILTER regex( str(?label) , ?text , 'i' ) """ ;
-			api:orderBy "?label" ;
+		api:where
+			""" ?item skos:inScheme ?scheme .
+			{ ?item skos:prefLabel ?label }
+			UNION
+			{ ?item skos:altLabel ?label }
+			UNION
+			{ ?item rdfs:label ?label }
+			FILTER regex( str(?label) , ?text , 'i' ) """ ;
+		api:orderBy "?label" ;
 	] ;
 	.
 
 lva:ListTermsByNotation
+	a api:ListEndpoint;
+	api:exampleRequestPath "/terms?notation=512" ;
+	api:uriTemplate "/terms?notation={text}" ;
+	api:selector [
+		api:where
+			""" ?item rdf:type skos:Concept .
+			?item skos:notation ?notation .
+			FILTER ( str(?notation)=?text ) """ ;
+		api:orderBy "?item" ;
+	] ;
+	.
+
+lva:ListVocabularyTermsByNotation
 	a api:ListEndpoint;
 	api:exampleRequestPath "/vocab/nims/terms?notation=512" ;
 	api:uriTemplate "/vocab/{vocab}/terms?notation={text}" ;
