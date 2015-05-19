@@ -25,7 +25,13 @@ Linked Data API Specification for publishing SKOS vocabulary linked data on the 
 | *get list of all terms that are an exact match to the specified term* | ``GET /vocab/{vocab_id}/term/{term_id}/exactMatch`` |
 | *get list of all terms in vocabulary with a label that is an exact match with the specified text* | ``GET /vocab/{vocab_id}/terms?anyLabel={text}`` |
 | *get list of all terms in vocabulary with a label that contains the specified text* | ``GET /vocab/{vocab_id}/terms?anyLabelContains={text}`` |
-| *get list of all terms that are a close match to the specified term and are in a vocabulary with the specified label* | ``GET /vocab/{vocab_id}/term/{term_id}/closeMatch?inScheme.prefLabel={name}`` |
+
+### Vocabulary Mapping
+
+The client may specify the vocabulary to map against with the ``inScheme.prefLabel={vocab_name}`` query parameter.  The returned list of terms will only contain terms from the specified vocabulary.
+
+**example**
+``GET /vocab/dcmp/term/wind/closeMatch?inScheme.prefLabel=gcmd``
 
 ### Property Filtering
 
