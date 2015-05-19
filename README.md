@@ -26,11 +26,11 @@ Linked Data API Specification for publishing SKOS vocabulary linked data on the 
 The client may specify what properties to include in the response with the ``_properties`` query parameter.  Properties are referenced by name in a comma-delimited list.
 
 **example**
-``GET /vocab/{vocab_id}/terms?_properties=prefLabel,altLabel``
+``GET /terms?_properties=prefLabel,altLabel``
 
 ### List Pagination
 
 Lists responses are paginated by default.  The client can use the ``_page`` and ``_pageSize`` query attributes to control pagination parameters.
 
 **example**
-``GET /vocab/{vocab_id}/terms?_page=2&_pageSize=25``
+``GET /terms?_page=2&_pageSize=25``
