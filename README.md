@@ -9,6 +9,7 @@ The API
 
 | Description  | Endpoint Template |
 | ------------- | ------------- |
+| *get list of all terms from all vocabularies published by service* | ``GET /terms`` |
 | *get vocabulary resource*  | ``GET /vocab/{vocab_id}``  |
 | *get vocabulary term*  | ``GET /vocab/{vocab_id}/term/{term_id}``  |
 | *get list of all terms in the specified vocabulary* | ``GET /vocab/{vocab_id}/terms`` |
