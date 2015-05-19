@@ -13,6 +13,9 @@ The API
 | *get vocabulary resource*  | ``GET /vocab/{vocab_id}``  |
 | *get vocabulary term*  | ``GET /vocab/{vocab_id}/term/{term_id}``  |
 | *get list of all terms in the specified vocabulary* | ``GET /vocab/{vocab_id}/terms`` |
+| *get list of all top terms in the specified vocabulary* | `` GET /vocab/{vocab_id}/topTerms`` |
+| *get list of all terms narrower than the specified term* | ``GET /vocab/{vocab_id}/term/{term_id}/narrower`` |
+| *get list of all terms broader than the specified term* | ``GET /vocab/{vocab_id}/term/{term_id}/broader`` |
 | *get list of all terms related to specified term* | ``GET /vocab/{vocab_id}/term/{term_id}/related`` |
 | *get list of all terms in vocabulary with a label that contains the specified text* | ``GET /vocab/{vocab_id}/terms?anyLabelContains={text}`` |
 | *get list of all terms that are a close match to the specified term and are in a vocabulary with the specified label* | ``GET /vocab/{vocab_id}/term/{term_id}/closeMatch?inScheme.prefLabel={name}`` |
