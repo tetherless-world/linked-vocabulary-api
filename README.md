@@ -18,6 +18,11 @@ Linked Data API Specification for publishing SKOS vocabulary linked data on the 
 | *get list of all terms related to specified term* | ``GET /vocab/{vocab_id}/term/{term_id}/related`` |
 | *get list of all terms narrower transitive than the specified term* | ``GET /vocab/{vocab_id}/term/{term_id}/narrowerTransitive`` |
 | *get list of all terms broader transitive than the specified term* | ``GET /vocab/{vocab_id}/term/{term_id}/broaderTransitive`` |
+| *get list of all terms that are a narrow match to the specified term* | ``GET /vocab/{vocab_id}/term/{term_id}/narrowMatch`` |
+| *get list of all terms that are a broad match to the specified term* | ``GET /vocab/{vocab_id}/term/{term_id}/broadMatch`` |
+| *get list of all terms that are a related match to the specified term* | ``GET /vocab/{vocab_id}/term/{term_id}/relatedMatch`` |
+| *get list of all terms that are a close match to the specified term* | ``GET /vocab/{vocab_id}/term/{term_id}/closeMatch`` |
+| *get list of all terms that are an exact match to the specified term* | ``GET /vocab/{vocab_id}/term/{term_id}/exactMatch`` |
 | *get list of all terms in vocabulary with a label that contains the specified text* | ``GET /vocab/{vocab_id}/terms?anyLabelContains={text}`` |
 | *get list of all terms that are a close match to the specified term and are in a vocabulary with the specified label* | ``GET /vocab/{vocab_id}/term/{term_id}/closeMatch?inScheme.prefLabel={name}`` |
 
