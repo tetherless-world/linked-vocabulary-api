@@ -4,8 +4,7 @@ linked-vocabulary-api
 
 Linked Data API Specification for publishing SKOS vocabulary linked data on the web
 
-The API
--------
+## The API
 
 | Description  | Endpoint Template |
 | ------------- | ------------- |
@@ -19,5 +18,17 @@ The API
 | *get list of all terms related to specified term* | ``GET /vocab/{vocab_id}/term/{term_id}/related`` |
 | *get list of all terms in vocabulary with a label that contains the specified text* | ``GET /vocab/{vocab_id}/terms?anyLabelContains={text}`` |
 | *get list of all terms that are a close match to the specified term and are in a vocabulary with the specified label* | ``GET /vocab/{vocab_id}/term/{term_id}/closeMatch?inScheme.prefLabel={name}`` |
-| *get list of terms, filtered to only include the specified properties* | ``GET /vocab/{vocab_id}/terms?_properties=prefLabel,altLabel`` |
-| *get paginated list of terms* | ``GET /vocab/{vocab_id}/terms?_page={index}&_pageSize={size}`` |
+
+### property filtering
+
+The client may specify what properties to include in the response with the ``_properties`` query parameter.  Properties are referenced by name in a comma-delimited list.
+
+**example**
+``GET /vocab/{vocab_id}/terms?_properties=prefLabel,altLabel``
+
+### List Pagination
+
+Lists responses are paginated by default.  The client can use the ``_page`` and ``_pageSize`` query attributes to control pagination parameters.
+
+**example**
+``GET /vocab/{vocab_id}/terms?_page=2&_pageSize=25``
