@@ -87,7 +87,7 @@ lva:vocabulariesEndpoint
 	] ;
 	.
 
-lva:termsTendpoint
+lva:termsEndpoint
 	a api:ListEndpoint ;
 	api:uriTemplate "/terms" ;
 	api:exampleRequestPath "/terms" ;
